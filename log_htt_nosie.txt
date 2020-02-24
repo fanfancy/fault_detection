@@ -1,0 +1,71 @@
+@ train 49.
+@ train fault types.
+@ snr = 40.
+@ Best Training Accuracy: 99.31 % achieved at EP #1615.
+@ Best Testing Accuracy: 93.88 % achieved at EP #1204.
+@ Last Training Accuracy: 99.03 % .
+@ Last Testing Accuracy: 91.67 % 
+.@ train 49.
+@ train fault types.
+@ snr = 35.
+@ Best Training Accuracy: 99.87 % achieved at EP #1753.
+@ Best Testing Accuracy: 87.75 % achieved at EP #386.
+@ Last Training Accuracy: 99.79 % .
+@ Last Testing Accuracy: 77.08 % 
+.@ train 49.
+@ train fault types.
+@ snr = 30.
+@ Best Training Accuracy: 99.16 % achieved at EP #1929.
+@ Best Testing Accuracy: 80.68 % achieved at EP #109.
+@ Last Training Accuracy: 98.65 % .
+@ Last Testing Accuracy: 54.92 % 
+.@ train 49.
+@ train fault types.
+@ snr = 40.
+@ Best Training Accuracy: 100.00 % achieved at EP #1852.
+@ Best Testing Accuracy: 100.00 % achieved at EP #785.
+@ Last Training Accuracy: 99.98 % .
+@ Last Testing Accuracy: 100.00 % 
+.@ train 49.
+@ train fault types.
+@ snr = 35.
+@ Best Training Accuracy: 99.12 % achieved at EP #960.
+@ Best Testing Accuracy: 100.00 % achieved at EP #861.
+@ Last Training Accuracy: 97.79 % .
+@ Last Testing Accuracy: 98.17 % 
+.@ train 49.
+@ train fault types.
+@ snr = 30.
+@ Best Training Accuracy: 99.71 % achieved at EP #1508.
+@ Best Testing Accuracy: 100.00 % achieved at EP #1492.
+@ Last Training Accuracy: 99.18 % .
+@ Last Testing Accuracy: 98.04 % 
+.@ train 49.
+@ train fault types.
+@ snr = 25.
+@ Best Training Accuracy: 99.66 % achieved at EP #1698.
+@ Best Testing Accuracy: 99.87 % achieved at EP #1692.
+@ Last Training Accuracy: 97.56 % .
+@ Last Testing Accuracy: 98.99 % 
+.@ train 49.
+@ train fault types.
+@ snr = 20.
+@ Best Training Accuracy: 99.64 % achieved at EP #1525.
+@ Best Testing Accuracy: 98.48 % achieved at EP #1562.
+@ Last Training Accuracy: 98.38 % .
+@ Last Testing Accuracy: 96.72 % 
+.@ train 49.
+@ train fault types.
+@ snr = 15.
+@ Best Training Accuracy: 99.94 % achieved at EP #1723.
+@ Best Testing Accuracy: 97.29 % achieved at EP #1569.
+@ Last Training Accuracy: 95.66 % .
+@ Last Testing Accuracy: 94.82 % 
+.@ train 49.
+@ train fault types.
+@ snr = 10.
+@ Best Training Accuracy: 99.64 % achieved at EP #1852.
+@ Best Testing Accuracy: 93.31 % achieved at EP #100.
+@ Last Training Accuracy: 98.93 % .
+@ Last Testing Accuracy: 90.09 % 
+.
