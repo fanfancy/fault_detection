@@ -52,11 +52,13 @@ def build_model_type1(input,fault_type):
     x = MaxPooling2D(pool_size=(4, 1))(x)
     x = Conv2D(32, (16, 1), activation='relu',padding='same')(x)
     x = Conv2D(32, (16, 1), activation='relu',padding='same')(x)
-    x = MaxPooling2D(pool_size=(4, 1))(x)
-
+    x = MaxPooling2D(pool_size=(4, 1))(x) # 6*3*32
     hht_co_input = Input(shape=([input[3]*18]),name='hht_co_input')
     x = keras.layers.core.Reshape([-1])(x)
+
     x = keras.layers.concatenate([x,hht_co_input],axis=1)
+
+
 
     x = Dropout(0.3)(x)
     x = Dense(64, activation='relu', kernel_regularizer = l2(0.0003))(x)
@@ -71,6 +73,35 @@ def build_model_type1(input,fault_type):
 
     print("> Compilation Time : ", time.time() - start)
     return model
+
+def build_model_type_2channel(input,fault_type):
+    main_input = Input(shape=([input[0], input[1], input[2]]), name='main_input')
+    x = Conv2D(4, (16, 1), activation='relu', padding='same')(main_input)
+    x = Conv2D(4, (16, 1), activation='relu', padding='same')(x)
+    x = MaxPooling2D(pool_size=(4, 1))(x)
+    x = Conv2D(8, (16, 1), activation='relu', padding='same')(x)
+    x = Conv2D(8, (16, 1), activation='relu', padding='same')(x)
+    x = MaxPooling2D(pool_size=(4, 1))(x)
+    x = Conv2D(16, (16, 1), activation='relu',padding='same')(x)
+    x = Conv2D(16, (16, 1), activation='relu',padding='same')(x)
+    x = MaxPooling2D(pool_size=(4, 1))(x)
+    x = Conv2D(32, (16, 1), activation='relu',padding='same')(x)
+    x = Conv2D(32, (16, 1), activation='relu',padding='same')(x)
+    x = MaxPooling2D(pool_size=(4, 1))(x) # 6*3*32
+    x = Dropout(0.3)(x)
+    x = Dense(64, activation='relu', kernel_regularizer = l2(0.0003))(x)
+    x = Dropout(0.3)(x)
+    x = Dense(64, activation='relu', kernel_regularizer = l2(0.0003))(x)
+    output = Dense(fault_type-5,activation='softmax', name = 'output', kernel_regularizer = l2(0.0003))(x)
+    
+    model = Model(inputs=[main_input,hht_co_input],outputs=output)
+    start = time.time()
+    model.compile(loss=losses.categorical_crossentropy, optimizer='Adam', metrics=['acc','mse', 'mae'])
+    model.summary()
+
+    print("> Compilation Time : ", time.time() - start)
+    return model
+
 
 def build_model_phase(input):
     
