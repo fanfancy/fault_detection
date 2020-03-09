@@ -14,7 +14,7 @@ import keras
 def build_model_type(input,fault_type):
     model = Sequential()
     model.add(Conv2D(32, (10, 2), activation='relu', padding='same', input_shape=(input[0], input[1], input[2])))
-    print ("input_shape",input_shape)
+    #print ("input_shape",input_shape)
     model.add(MaxPooling2D(pool_size=(2, 1)))
     model.add(Conv2D(16, (10, 2), activation='relu', padding='same'))
     model.add(MaxPooling2D(pool_size=(2, 1)))

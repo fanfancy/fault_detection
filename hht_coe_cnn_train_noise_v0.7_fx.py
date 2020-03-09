@@ -3,7 +3,7 @@ import numpy as np
 from numpy import random as nr
 import os
 from tqdm import tqdm
-
+import sys
 
 import keras
 from keras.models import Model
@@ -16,7 +16,10 @@ from sklearn.model_selection import train_test_split
 from readdata import load_data
 
 from httprocess2 import *
-   
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt    
+
 
 ####read file ############
 linenum_all = ['313']
@@ -31,7 +34,7 @@ suffix = '_1600point_randtime300.txt'
 
 ### whhether save the result or not
 record = 1
-
+record_file = "0229_noise_mode6.txt"
 #dataformat parameters
 length = 1600                            #length of the seuqence
 diff_conditions = 1                       #load change nums
@@ -43,6 +46,7 @@ repeat_times = 300
 normal = diff_conditions
 fault_kinds = fault_type
 kinds = (fault_kinds + normal)*repeat_times
+net_mode = 6
 
 SNR = [40, 35, 30]
 def wgn(x, snr):
@@ -54,8 +58,8 @@ def wgn(x, snr):
 #training parameters
 epochs = 3000
 faulttype = 1
-faultphase = 1
-faultloc = 1
+faultphase = 0
+faultloc = 0
 #####work mode################################################
 '''
 net_mode = 1  using current data directly
@@ -64,7 +68,8 @@ net_mode = 3  using HHT processed data with HHT coe
 net_mode = 4  using current data directly with HHT coe
 net_mode = 5  cnn kernel test
 '''
-net_mode = 4
+
+
 if net_mode == 1:
     from cnn_model_new import *
     layers = [length,3,1,n_imfs]
@@ -80,7 +85,9 @@ elif net_mode == 4:
 elif net_mode == 5:
     from cnn_kernel_test_model import *
     layers = [length,2*n_imfs,3,n_imfs]
-
+elif net_mode == 6:                        
+    from cnn_model_2channel import *
+    layers = [length,3,2]
 #######################################################
 
 
@@ -106,7 +113,8 @@ for linenum in linenum_all:
             # snr_train = snr
             for j in range(3):
                 data_train_noise[i,:,j] = wgn(data_train[i,:,j], snr)
-        # data_train = data_train + data_train_noise
+
+        data_train = data_train + data_train_noise
 
 
         data_test_noise = np.zeros([int(kinds*test_size), length, 3])
@@ -182,6 +190,19 @@ for linenum in linenum_all:
         HHT_coefficients_type_test =  HHT_coefficients_ori_test[index,:]
         label_type_test = label_test[index,:]
         print (label_type_test.shape)
+
+        print ("data3_type",data3_type.shape)
+        
+        data2_type_reshape = data2_type[:,:,1,:].reshape(int(kinds*train_size),length,3,1)
+        print ("data2_type_reshape",data2_type_reshape.shape)
+        data_2channel = np.concatenate((data3_type,data2_type_reshape),axis=3)
+        print (data_2channel.shape)
+
+        data4_type_reshape = data4_type[:,:,1,:].reshape(int(kinds*test_size),length,3,1)
+        print ("data4_type_reshape",data4_type_reshape.shape)
+        data_2channel_test = np.concatenate((data5_type,data4_type_reshape),axis=3)
+        print (data_2channel_test.shape)
+
         ################ choose the network structure ##############
         if net_mode==1:
             input_data_train = data3_type
@@ -198,10 +219,12 @@ for linenum in linenum_all:
         elif net_mode==5:
             input_data_train = {'main_input':data2_type,'hht_co_input':HHT_coefficients_type_train}
             input_data_test = {'main_input':data4_type,'hht_co_input':HHT_coefficients_type_test}
-
+        elif net_mode==6:
+            input_data_train = data_2channel
+            input_data_test = data_2channel_test
         ##################Type test ################################
         if faulttype == 1:
-            epochs = 3000
+            epochs = 2000
             input_label_train = label_type_train[:,0:6]
             input_label_test = label_type_test[:,0:6]
             global_start_time = time.time()
@@ -225,7 +248,20 @@ for linenum in linenum_all:
             print("@ Last Testing Accuracy: %.2f %% ." % (val_acc[-1] * 100))
 
             if record:
-                with open("rand300_log_noise.txt",'a+') as f:
+                plt.figure()
+                plt.plot(acc)
+                plt.savefig("./figure_res/acc_type.png")
+
+                plt.figure()
+                plt.plot(val_acc)
+                plt.savefig("./figure_res/val_acc_type.png")
+
+                plt.figure()
+                loss = h_type.history['loss']
+                plt.plot(loss)
+                plt.savefig("./figure_res/loss_type.png")
+
+                with open(record_file,'a+') as f:
                     f.write("@ train %s.\n" % (linenum))
                     f.write("@ train fault types.\n")
                     f.write("@ snr = %s.\n" % (snr))
@@ -263,7 +299,19 @@ for linenum in linenum_all:
             print("@ Best Training Accuracy: %.2f %% achieved at EP #%d." % (acc[m_acc] * 100, m_acc + 1))
             print("@ Best Testing Accuracy: %.2f %% achieved at EP #%d." % (val_acc[m_val_acc] * 100, m_val_acc + 1))
             if record:
-                with open("rand300_log_noise.txt", 'a+') as f:
+                plt.figure()
+                plt.plot(acc)
+                plt.savefig("./figure_res/acc_phase.png")
+
+                plt.figure()
+                plt.plot(val_acc)
+                plt.savefig("./figure_res/val_acc_phase.png")
+
+                plt.figure()
+                loss = h_phase.history['loss']
+                plt.plot(loss)
+                plt.savefig("./figure_res/loss_phase.png")
+                with open(record_file, 'a+') as f:
                         f.write("@ train %s.\n" % (linenum))
                         f.write("@ train fault phases.\n")
                         f.write("@ snr = %s.\n" % (snr))
@@ -299,7 +347,19 @@ for linenum in linenum_all:
             print("@ Last Training Accuracy: %.2f %% ." % (mae[-1] * 100))
             print("@ Last Testing Accuracy: %.2f %% ." % (val_mae[-1] * 100))
             if record:
-                with open("rand300_log_noise.txt", 'a+') as f:
+                plt.figure()
+                plt.plot(mae)
+                plt.savefig("./figure_res/mae_loc.png")
+    
+                plt.figure()
+                plt.plot(val_mae)
+                plt.savefig("./figure_res/m_val_mae_loc.png")
+    
+                plt.figure()
+                loss = h_loc.history['loss']
+                plt.plot(loss)
+                plt.savefig("./figure_res/loss_loc.png")
+                with open(record_file, 'a+') as f:
                     f.write("@ train %s.\n" % (linenum))
                     f.write("@ train fault locations.\n")
                     f.write("@ snr = %s.\n" % (snr))

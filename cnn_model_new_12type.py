@@ -53,7 +53,7 @@ def build_model_type1(input,fault_type):
     model.add(Dense(64, activation='relu', kernel_regularizer=l2(0.0003)))
     model.add(Dropout(0.3))
     model.add(Dense(64, activation='relu', kernel_regularizer=l2(0.0003)))
-    model.add(Dense(fault_type-5, activation='softmax', kernel_regularizer=l2(0.0003)))
+    model.add(Dense(12, activation='softmax', kernel_regularizer=l2(0.0003)))
 
     start = time.time()
     model.compile(loss=losses.categorical_crossentropy, \

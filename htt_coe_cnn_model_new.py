@@ -115,7 +115,7 @@ def build_model_phase1(input):
     x = Dense(64, activation='relu', kernel_regularizer=l2(0.0003))(x)
     x = Dropout(0.3)(x)
     x = Dense(64, activation='relu', kernel_regularizer=l2(0.0003))(x)
-    output = Dense(4,activation='sigmoid', name = 'output', kernel_regularizer=l2(0.0003))(x)
+    output = Dense(3,activation='sigmoid', name = 'output', kernel_regularizer=l2(0.0003))(x)
     
     model = Model(inputs=[main_input,hht_co_input],outputs=output)
     start = time.time()

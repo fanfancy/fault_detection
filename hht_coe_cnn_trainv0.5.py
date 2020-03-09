@@ -82,7 +82,7 @@ for linenum in linenum_all:
     filename = os.path.join(curdir,'./data/'+linenum+writefile+suffix)
 
 
-    data, label, name = load_data(filename,length,kinds)
+    data, label, name = load_data(filename,length,kinds,fault_type)
     label = label[0::length]
     data = np.reshape(data,[-1,length,3])
 
@@ -144,7 +144,7 @@ for linenum in linenum_all:
     ##################Type test ################################1
     input_label = label_type[:,0:5]
     global_start_time = time.time()
-    model_type = build_model_type(layers)
+    model_type = build_model_type(layers,fault_type)
     h_type = model_type.fit(
                 input_data,
                 input_label,

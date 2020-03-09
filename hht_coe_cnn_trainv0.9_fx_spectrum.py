@@ -1,5 +1,5 @@
 #log
-#change the position of hht coe 0224, work with htt_coe_cnn_modelv09.py
+#for spectrum  100*100 
 import time
 import numpy as np
 from numpy import random as nr
@@ -13,33 +13,26 @@ from keras.models import Model
 from keras.utils.vis_utils import model_to_dot
 from keras.utils import plot_model
 from keras import backend as K
-# from keras.callbacks import Reduc
 
-from readdata import load_data
-from httprocess2 import *
+from readdata_spectrum import load_data
 from matplotlib import pyplot as plt 
-   
+from cnn_model_spectrum import * 
 
 ####read file ############
-#linenum_all = ['313']
-#linenum_all = ['49']
-#linenum_all = ['75']
 #linenum_all = ['49', '269', '313', '316', '75', '72', '69', '66']
-linenum_all = ['49', '269',  '316', '75', '72', '69', '66','81', '319']
-#linenum_all = ['313']
-
-#linenum_all = ['313', '316', '75', '72', '69', '66']
-# linenum_all = ['100002']
+#linenum_all = ['81', '319']
+linenum_all = ['313']
 writefile = 'train_data'
 # suffix = '_320point.txt'
 # suffix = '_400point_large_resistance.txt'
 # suffix = '_400point_4load_change.txt'
 # suffix = '_1600point_randtime300.txt'
-suffix = '_1600point_randtime300.txt'
+suffix = '_1600point_randtime300_spectrum.txt'
+suffix_label = '_1600point_randtime300_label.txt'
 
 ### whhether save the result or not
 record = 1
-record_file = "log0304_netmode4.txt"
+record_file = "0308_spectrum_phase.txt"
 
 #dataformat parameters
 length = 1600                               #length of the seuqence
@@ -51,147 +44,78 @@ n_imfs = 2                                  # nimf nums
 
 #########TODO#######################
 repeat_times = 300
-net_mode = 4
 normal = diff_conditions
 fault_kinds = fault_type
 kinds = (fault_kinds + normal)*repeat_times # 12000 cycle
-faulttype = 1
-faultphase = 1
+faulttype = 0
+faultphase = 0
 faultloc = 1
 
 #training parameters
 epochs = 2000
 
+
 #####work mode################################################
-'''
-net_mode = 1  using current data directly
-net_mode = 2  using HHT processed data without HHT coe
-net_mode = 3  using HHT processed data with HHT coe
-net_mode = 4  using current data directly with HHT coe
-net_mode = 5  cnn kernel test
-'''
-if net_mode == 1:
-    from cnn_model_new import *
-    layers = [length,3,1,n_imfs]
-elif net_mode == 2 :
-    from cnn_model_new import *
-    layers = [length,2*n_imfs,3,n_imfs]
-elif net_mode == 3 :
-    from htt_coe_cnn_modelv09 import *
-    layers = [length,2*n_imfs,3,n_imfs]
-elif net_mode == 4:
-    from htt_coe_cnn_modelv09 import *
-    layers = [length,3,1,n_imfs]
-elif net_mode == 5:
-    from cnn_kernel_test_model import *
-    layers = [length,2*n_imfs,3,n_imfs]
-elif net_mode == 6:                        
-    from cnn_model_2channel import *
-    layers = [length,3,2]
-elif net_mode == 7:                        
-    from temp_cnn_model_2branch import *
-    layers = [length,3,1]
-
-#######################################################
-
+layers = [100,100,1]  # 100 * 100 *3
 
 for linenum in linenum_all:
     print(linenum," trainging test")
     curdir = os.path.abspath(os.curdir)
-    filename = os.path.join(curdir,'./data/'+linenum+writefile+suffix)
+    filename = os.path.join(curdir,'./data/spectrum/'+linenum+writefile+suffix)
+    labelfile = os.path.join(curdir,'./data/spectrum/'+linenum+writefile+suffix_label)
 
 
-    data, label, name = load_data(filename,length,kinds,fault_type)
-    print ("data shape1",data.shape) #(19200000, 3)
-    print ("label.shape",label.shape)
-    label = label[0::length]
-    print ("label.shape",label.shape)
-    data = np.reshape(data,[-1,length,3])
-    print ("data shape2",data.shape) #(12000, 1600, 3)
+    data, label, name = load_data(filename,labelfile,kinds,fault_type)
+    print ("data shape1",data.shape)  #(3600, 100, 100,3)
 
-    #################### whether using HHT and its coe or not ###############
-    if net_mode == 1:
-        ### data for CNN only
-        pass
-    # else:
-    res = multicore(data, n_imfs+1, kinds) #data with hht TODO check 6=2+4
-    res = np.array(res) #(12000, 1600, 4, 3)    
-    print ("res shape",res.shape)
-    data2 = np.zeros((kinds, length, n_imfs * 2, 3))
-    print ("data2 shape",data2.shape) #(12000, 1600, 2, 3)
-    for i in range(kinds):
-        data2[i, :, :, :] = res[i, :, 2:, :]
+    #data = data[:,:,:,np.newaxis]
+    #for xx in range (label.shape[0]):
+    #    print (xx,'\t',label[xx])
+    #sys.exit()
 
-        # if net_mode == 3 or net_mode ==4:
-    start = int(length * 0.25)
-    end = -start
-    HHT_coefficients = np.zeros((kinds,6,n_imfs,3))
-    #HHT_coefficients = np.zeros((kinds,3,n_imfs,6))
-    print ("HHT_coefficients shape",HHT_coefficients.shape) #(12000, 3, 2, 6)
-
-    for kind in range(kinds):
-        for i in range(n_imfs): #imf 0 1
-            for j in range(3): #phase
-                HHT_coefficients[kind,0,i,j] = np.max(data2[kind,start:end,2*i+1,j])
-                HHT_coefficients[kind,1,i,j] = np.min(data2[kind,start:end,2*i+1,j])
-                HHT_coefficients[kind,2,i,j] = np.mean(data2[kind,start:end,2*i+1,j])
-                HHT_coefficients[kind,3,i,j] = np.std(data2[kind,start:end,2*i+1,j])
-                HHT_coefficients[kind,4,i,j] = scipy.stats.skew(data2[kind,start:end,2*i+1,j])
-                HHT_coefficients[kind,5,i,j] = np.sum(np.square(data2[kind,start:end,2*i+1,j]))
-
-
-    HHT_coefficients_ori = np.reshape(HHT_coefficients,[kinds,-1])
-    print ("HHT_coefficients_ori shape",HHT_coefficients_ori.shape) #(12000, 36)
-
-    ################### adjust the format to input directly into CNN##############
-    data3 = data[:,:,:,np.newaxis]
-
-    
     #############shuffle the data #######################################
-    index = [i for i in range(data.shape[0])]
+    index = [i for i in range(data.shape[0])] #3600
     np.random.shuffle(index)
-    data2_type = data2[index,:,:,:]
-    data3_type = data3[index,:,:,:]
-    print ("data2_type",data2_type.shape)
-    HHT_coefficients_type = HHT_coefficients_ori[index,:]
+    data_each_kind = data[index,:,:,:]
+    print ("data_each_kind",data_each_kind.shape)
     label = label[index,:]
     print ("label",label.shape)
-
-    print ("data3_type",data3_type.shape)
-    data2_type_reshape = data2_type[:,:,0,:].reshape(kinds,length,3,1)      #ifreq
-    data2_type_reshape_2 = data2_type[:,:,1,:].reshape(kinds,length,3,1)    #amp
-    print ("data2_type_reshape",data2_type_reshape.shape)
-
-    data_2channel = np.concatenate((data2_type_reshape,data3_type),axis=3) #TODO
-    # data_2channel = np.concatenate((data3_type,data2_type_reshape),axis=3) 
-    print (data_2channel.shape)
+    
+    data_a = data_each_kind[:,:,:,0]
+    data_b = data_each_kind[:,:,:,1]
+    data_c = data_each_kind[:,:,:,2]
+    data_a = data_a[:,:,:,np.newaxis]
+    data_b = data_b[:,:,:,np.newaxis]
+    data_c = data_c[:,:,:,np.newaxis]
+    
+    label_train  = label [:int(kinds*0.75)]
+    label_test   = label [int(kinds*0.75):]
+    data_a_train = data_a[:int(kinds*0.75)]
+    data_a_test  = data_a[int(kinds*0.75):]
+    data_b_train = data_b[:int(kinds*0.75)]
+    data_b_test  = data_b[int(kinds*0.75):]
+    data_c_train = data_c[:int(kinds*0.75)]
+    data_c_test  = data_c[int(kinds*0.75):]
 
     ################ choose the network structure ##############
-    if net_mode==1:
-        input_data = data3_type #data2_type_reshape #
-    elif net_mode==2:
-        input_data = data2_type
-    elif net_mode==3:
-        input_data = {'main_input':data2_type,'hht_co_input':HHT_coefficients_type}
-    elif net_mode==4:
-        input_data = {'main_input':data3_type,'hht_co_input':HHT_coefficients_type}
-    elif net_mode==5:
-        input_data = {'main_input':data2_type,'hht_co_input':HHT_coefficients_type}
-    elif net_mode==6:
-        input_data = {'main_input':data_2channel}
-    elif net_mode==7:
-        input_data = {'main_input':data3_type,'hht_ifreq_input':data2_type_reshape}
+    input_data = {'inputa':data_a,'inputb':data_b,'inputc':data_c}
+    data_train = {'inputa':data_a_train,'inputb':data_b_train,'inputc':data_c_train}
+    data_test = {'inputa':data_a_test,'inputb':data_b_test,'inputc':data_c_test}
+    
     ##################Type test ################################1
     if faulttype == 1:
-        epochs = 2000
+        epochs = 3000
         input_label = label[:,0:6]
+        label_test_current_net  = label_test [:,0:6]
+        label_train_current_net = label_train[:,0:6]
+
         global_start_time = time.time()
         model_type = build_model_type1(layers, fault_type)
         h_type = model_type.fit(
-                    input_data,
-                    input_label,
+                    data_train,
+                    label_train_current_net,
                     batch_size=int(kinds*0.1), 
-                    validation_split=0.25,
+                    validation_data=(data_test, label_test_current_net),
                     verbose=1,
                     shuffle=True,
                     epochs=epochs)
@@ -236,13 +160,18 @@ for linenum in linenum_all:
     if faultphase == 1:
         epochs = 2000
         model_phase = build_model_phase1(layers)
-        input_label = label[:,6:10]
+        input_label = label[:,6:9]
+        label_train_current_net = label_train[:,6:9]
+        label_test_current_net = label_test[:,6:9]
+        label_test_current_net = label_test_current_net.astype(np.int16) #for comparing in phase test
+        label_train_current_net = label_train_current_net.astype(np.int16)
+
         global_start_time = time.time()
         h_phase = model_phase.fit(
-                input_data,
-                input_label,
-                batch_size=int(kinds*0.1),
-                validation_split=0.25,
+                data_train,
+                label_train_current_net,
+                batch_size=int(kinds*0.4),
+                validation_data=(data_test, label_test_current_net),
                 verbose=1,
                 shuffle=True,
                 epochs=epochs)
@@ -278,20 +207,65 @@ for linenum in linenum_all:
                 f.write("@ Now Training Accuracy: %.2f %% achieved at EP #%d.\n" % (acc[m_val_acc] * 100, m_val_acc + 1))
                 f.write("@ Last Training Accuracy: %.2f %% .\n" % (acc[-1] * 100))
                 f.write("@ Last Testing Accuracy: %.2f %% .\n" % (val_acc[-1] * 100))
+            ############train phase accuracy###############################
+            model_phase.save("0308_spectrum_phase.h5")
+
+            testmodel = load_model("0308_spectrum_phase.h5")
+            predict = model_phase.predict(data_train) #900*3
+            predict[predict >= 0.5] = 1
+            predict[predict < 0.5] = 0
+            predict=predict.astype(np.int16)
+            print ("predict.shape",predict.shape)
+            false = []
+            for ii in range(predict.shape[0]):
+                #print ("type(predict[ii][0])",type(predict[ii][0]))
+                #print ("type(label_test_current_net[ii][0])",type(label_train_current_net[ii][0]))
+                if not(all(predict[ii]==label_train_current_net[ii])):
+                    false.append(ii)
+
+            print("len(false)",len(false))
+            print("false",false)
+            with open(record_file, 'a+') as f:
+                print ("train_accuracy",1-len(false)/2700,file=f)
+                for i in range (len(false)):
+                    print(label_train_current_net[false[i]],"\t\t",predict[false[i]],file=f)
+
+            ######valid phase accuracy#############
+            testmodel = load_model("0308_spectrum_phase.h5")
+            predict = model_phase.predict(data_test) #900*3
+            predict[predict >= 0.5] = 1
+            predict[predict < 0.5] = 0
+            predict=predict.astype(np.int16)
+            print ("predict.shape",predict.shape)
+            false = []
+            for ii in range(predict.shape[0]):
+                if not(all(predict[ii]==label_test_current_net[ii])):
+                    false.append(ii)
+
+            print("len(false)",len(false))
+            print("false",false)
+            print ("label_test_current_net.shape",label_test_current_net.shape)
+            with open(record_file, 'a+') as f:
+                print ("valid_accuracy",1-len(false)/900,file=f)
+                for i in range (len(false)):
+                    print(label_test_current_net[false[i]],"\t\t",predict[false[i]],file=f)
 
         K.clear_session()
 
     ############ Location test #######################3
     if faultloc == 1:
-        epochs = 3000
+        epochs = 2000
         model_loc = build_model_location1(layers)
         input_label = label[: ,-1]
+        label_test_current_net  = label_test [:,-1]
+        label_train_current_net = label_train[:,-1]
+        
         global_start_time = time.time()
         h_loc = model_loc.fit(
-                input_data,
-                input_label,
-                batch_size=int(kinds*0.1), 
-                validation_split=0.25,
+                data_train,
+                label_train_current_net,
+                batch_size=int(kinds*0.4), 
+                validation_data=(data_test, label_test_current_net),
                 verbose=1,
                 shuffle=True,
                 epochs=epochs)

@@ -3,19 +3,25 @@ import numpy as np
 from tqdm import tqdm
 import sys
 
-def load_data(filename,length,kinds,fault_type):
-    data = np.zeros((length * kinds, 3))
-    label = np.zeros((length * kinds, fault_type))
+def load_data(filename,labelfile,kinds,fault_type):
+    data = np.zeros((kinds,100,100,3))
+    label = np.zeros((kinds, fault_type))
     name = list()
     
     count = 0
     with open(filename) as f:
         for line in tqdm(f):
             temp = line.strip().split()
+            temp = np.array(temp)
+            kind = count//3
+            phase = count-kind*3
+            data[kind,:,:,phase] = temp.reshape(100,100)
+            count = count + 1
 
-            data[count, 0] = float(temp[0])
-            data[count, 1] = float(temp[1])
-            data[count, 2] = float(temp[2])
+    count = 0
+    with open(labelfile) as f2:
+        for line in tqdm(f2):
+            temp = line.strip().split()
             label[count, 0] = int(temp[3])
             label[count, 1] = int(temp[4])
             label[count, 2] = int(temp[5])
@@ -32,17 +38,12 @@ def load_data(filename,length,kinds,fault_type):
                     label[count, 10] = 0.0
                 else:
                     label[count, 10] = float(temp[13])
-                if count%length==0:
-                    name.append(temp[14])
+                name.append(temp[14])
             
             elif (fault_type ==10):
                 label[count, 9] = float(temp[12]) 
-                if count%length==0:
-                    name.append(temp[13])
+                name.append(temp[13])
 
             count = count + 1
-    print (str(count) + 'lines are read, '+ str(length * kinds) +'is respected' )
-    if (count!=length * kinds):
-        print (filename,"data length error")
-        sys.exit()
+    print (str(count) + 'lines are read')
     return [data, label,name]

@@ -1,0 +1,41 @@
+@ train 313.
+@ train fault types.
+@ snr = 40.
+@ Best Training Accuracy: 94.00 % achieved at EP #1971.
+@ Best Testing Accuracy: 76.67 % achieved at EP #1088.
+@ Now Training Accuracy: 85.89 % achieved at EP #1088.
+@ Last Training Accuracy: 92.59 % .
+@ Last Testing Accuracy: 73.33 % 
+.@ train 313.
+@ train fault types.
+@ snr = 40.
+@ Best Training Accuracy: 94.52 % achieved at EP #1867.
+@ Best Testing Accuracy: 76.22 % achieved at EP #956.
+@ Now Training Accuracy: 86.15 % achieved at EP #956.
+@ Last Training Accuracy: 93.41 % .
+@ Last Testing Accuracy: 73.11 % 
+.@ train 313.
+@ train fault types.
+@ snr = 40.
+@ Best Training Accuracy: 89.11 % achieved at EP #1999.
+@ Best Testing Accuracy: 78.56 % achieved at EP #1343.
+@ Now Training Accuracy: 83.78 % achieved at EP #1343.
+@ Last Training Accuracy: 87.67 % .
+@ Last Testing Accuracy: 76.56 % 
+.@ train 313.
+@ train fault types.
+@ snr = 40.
+@ Best Training Accuracy: 93.96 % achieved at EP #1953.
+@ Best Testing Accuracy: 77.44 % achieved at EP #959.
+@ Now Training Accuracy: 85.93 % achieved at EP #959.
+@ Last Training Accuracy: 92.85 % .
+@ Last Testing Accuracy: 76.22 % 
+.@ train 313.
+@ train fault types.
+@ snr = 35.
+@ Best Training Accuracy: 96.11 % achieved at EP #1871.
+@ Best Testing Accuracy: 78.67 % achieved at EP #610.
+@ Now Training Accuracy: 85.52 % achieved at EP #610.
+@ Last Training Accuracy: 95.67 % .
+@ Last Testing Accuracy: 75.00 % 
+.

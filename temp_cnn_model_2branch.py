@@ -16,7 +16,9 @@ import keras
 import sys
 
 def build_model_type1(input,fault_type):
-    main_input = Input(shape=([input[0], input[1], input[2]]), name='main_input')   #1600*3*2
+    main_input = Input(shape=([input[0], input[1], input[2] ]), name='main_input')   #1600*3*2
+    hht_ifreq_input = Input(shape=([input[0], input[1], input[2]]),name='hht_ifreq_input')
+
     x = Conv2D(4, (8, 1), activation='relu', padding='same')(main_input)	 	    #1600*3*4
     x = MaxPooling2D(pool_size=(4, 1))(x) 					                        #400*3*4
     x = Conv2D(4, (8, 1), activation='relu', padding='same')(x)			            #400*3*4
@@ -29,12 +31,29 @@ def build_model_type1(input,fault_type):
     x = MaxPooling2D(pool_size=(4, 1))(x) # 6*3*32				                    #1*3*32
     x = keras.layers.core.Reshape([-1])(x)
     
-    x = Dropout(0.3)(x)     #TODO
-    x = Dense(64, activation='relu', kernel_regularizer = l2(0.01))(x)
-    x = Dropout(0.3)(x)
-    x = Dense(32, activation='relu', kernel_regularizer = l2(0.01))(x)
-    output = Dense(fault_type-5,activation='softmax', name = 'output', kernel_regularizer = l2(0.01))(x)
-    model = Model(inputs=main_input,outputs=output)
+    
+    y = Conv2D(4, (8, 1), activation='relu', padding='same')(hht_ifreq_input)	 	    #1600*3*4
+    y = MaxPooling2D(pool_size=(4, 1))(y) 					                        #400*3*4
+    y = Conv2D(4, (8, 1), activation='relu', padding='same')(y)			            #400*3*4
+    y = MaxPooling2D(pool_size=(4, 1))(y)					                        #100*3*4
+    y = Conv2D(8, (8, 1), activation='relu', padding='same')(y)			            #100*3*8
+    y = MaxPooling2D(pool_size=(4, 1))(y)					                        #25*3*8
+    y = Conv2D(16, (8, 1), activation='relu',padding='same')(y) 			        #25*3*16
+    y = MaxPooling2D(pool_size=(4, 1))(y)					                        #6*3*16
+    y = Conv2D(32, (8, 1), activation='relu',padding='same')(y) 			        #6*3*32
+    y = MaxPooling2D(pool_size=(4, 1))(y) # 6*3*32				                    #1*3*32
+    y = keras.layers.core.Reshape([-1])(y)
+
+    
+    z = keras.layers.concatenate([x,y],axis=1)
+
+
+    z = Dropout(0.3)(z)     #TODO
+    z = Dense(64, activation='relu', kernel_regularizer = l2(0.0003))(z)
+    z = Dropout(0.3)(z)
+    z = Dense(32, activation='relu', kernel_regularizer = l2(0.0003))(z)
+    output = Dense(fault_type-5,activation='softmax', name = 'output', kernel_regularizer = l2(0.0003))(z)
+    model = Model(inputs=[main_input,hht_ifreq_input],outputs=output)
     start = time.time()
     model.compile(loss=losses.categorical_crossentropy, optimizer='Adam', metrics=['acc','mse', 'mae'])
     model.summary()
@@ -60,10 +79,10 @@ def build_model_phase1(input):
     x = keras.layers.core.Reshape([-1])(x)
     
     x = Dropout(0.3)(x)     #TODO
-    x = Dense(64, activation='relu', kernel_regularizer = l2(0.01))(x)
+    x = Dense(64, activation='relu', kernel_regularizer = l2(0.0003))(x)
     x = Dropout(0.3)(x)
-    x = Dense(32, activation='relu', kernel_regularizer = l2(0.01))(x)
-    output = Dense(4,activation='sigmoid', name = 'output', kernel_regularizer=l2(0.01))(x)
+    x = Dense(32, activation='relu', kernel_regularizer = l2(0.0003))(x)
+    output = Dense(4,activation='sigmoid', name = 'output', kernel_regularizer=l2(0.0003))(x)
     
     model = Model(inputs=main_input,outputs=output)
     start = time.time()
@@ -88,10 +107,10 @@ def build_model_location1(input):
     x = keras.layers.core.Reshape([-1])(x)
     
     x = Dropout(0.3)(x)     #TODO
-    x = Dense(64, activation='relu', kernel_regularizer = l2(0.01))(x)
+    x = Dense(64, activation='relu', kernel_regularizer = l2(0.0003))(x)
     x = Dropout(0.3)(x)
-    x = Dense(32, activation='relu', kernel_regularizer = l2(0.01))(x)
-    output = Dense(1,activation='sigmoid', name = 'output', kernel_regularizer=l2(0.01))(x)
+    x = Dense(32, activation='relu', kernel_regularizer = l2(0.0003))(x)
+    output = Dense(1,activation='sigmoid', name = 'output', kernel_regularizer=l2(0.0003))(x)
     
     model = Model(inputs=main_input,outputs=output)
     start = time.time()

@@ -1,0 +1,21 @@
+@ train 313.
+@ train fault types.
+@ Best Training Accuracy: 95.34 % achieved at EP #557.
+@ Best Testing Accuracy: 98.77 % achieved at EP #493.
+@ Now Training Accuracy: 63.24 % achieved at EP #493.
+@ Last Training Accuracy: 57.78 % .
+@ Last Testing Accuracy: 28.10 % .
+@ train 313.
+@ train fault phases.
+@ Best Training Accuracy: 98.85 % achieved at EP #560.
+@ Best Testing Accuracy: 98.68 % achieved at EP #579.
+@ Now Training Accuracy: 98.73 % achieved at EP #579.
+@ Last Training Accuracy: 98.76 % .
+@ Last Testing Accuracy: 98.60 % .
+@ train 313.
+@ train fault locations.
+@ Best Training Accuracy: 1.05 % achieved at EP #1941.
+@ Best Testing Accuracy: 1.06 % achieved at EP #1695.
+@ Now Training Accuracy: 1.18 % achieved at EP #1695.
+@ Last Training Accuracy: 1.14 % .
+@ Last Testing Accuracy: 1.28 % .

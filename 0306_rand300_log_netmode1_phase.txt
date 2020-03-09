@@ -1,0 +1,131 @@
+@ train 269.
+@ train fault phases.
+@ Best Training Accuracy: 99.99 % achieved at EP #859.
+@ Best Testing Accuracy: 100.00 % achieved at EP #781.
+@ Now Training Accuracy: 99.84 % achieved at EP #781.
+@ Last Training Accuracy: 99.83 % .
+@ Last Testing Accuracy: 99.85 % .
+train_accuracy 0.9996296296296296
+[ 0.  0.  1.] 		 [0 1 1]
+valid_accuracy 0.9955555555555555
+[1 0 0] 		 [1 0 1]
+[1 0 1] 		 [0 0 1]
+[1 1 1] 		 [0 1 1]
+[1 0 0] 		 [1 1 0]
+@ train 313.
+@ train fault phases.
+@ Best Training Accuracy: 100.00 % achieved at EP #815.
+@ Best Testing Accuracy: 100.00 % achieved at EP #161.
+@ Now Training Accuracy: 99.59 % achieved at EP #161.
+@ Last Training Accuracy: 99.88 % .
+@ Last Testing Accuracy: 99.96 % .
+train_accuracy 1.0
+valid_accuracy 0.9988888888888889
+[1 1 1] 		 [0 1 1]
+@ train 316.
+@ train fault phases.
+@ Best Training Accuracy: 100.00 % achieved at EP #515.
+@ Best Testing Accuracy: 100.00 % achieved at EP #539.
+@ Now Training Accuracy: 99.89 % achieved at EP #539.
+@ Last Training Accuracy: 99.86 % .
+@ Last Testing Accuracy: 99.89 % .
+train_accuracy 0.9985185185185185
+[ 1.  0.  0.] 		 [0 0 0]
+[ 0.  1.  1.] 		 [0 0 1]
+[ 0.  0.  1.] 		 [0 0 0]
+[ 1.  1.  0.] 		 [0 1 0]
+valid_accuracy 0.9966666666666667
+[1 0 0] 		 [0 0 0]
+[0 1 0] 		 [0 0 0]
+[1 1 0] 		 [0 1 0]
+@ train 75.
+@ train fault phases.
+@ Best Training Accuracy: 99.84 % achieved at EP #690.
+@ Best Testing Accuracy: 99.63 % achieved at EP #934.
+@ Now Training Accuracy: 99.51 % achieved at EP #934.
+@ Last Training Accuracy: 99.73 % .
+@ Last Testing Accuracy: 99.33 % .
+train_accuracy 0.9985185185185185
+[ 0.  0.  1.] 		 [0 1 1]
+[ 0.  0.  1.] 		 [0 1 1]
+[ 1.  1.  0.] 		 [0 1 0]
+[ 0.  1.  0.] 		 [1 1 0]
+valid_accuracy 0.9822222222222222
+[0 1 1] 		 [0 0 1]
+[0 1 1] 		 [0 0 1]
+[1 0 0] 		 [1 0 1]
+[1 1 0] 		 [0 1 0]
+[0 1 1] 		 [0 0 1]
+[0 1 1] 		 [0 0 1]
+[1 0 0] 		 [1 0 1]
+[0 1 0] 		 [1 1 0]
+[0 0 1] 		 [0 1 0]
+[0 1 0] 		 [1 1 0]
+[0 1 1] 		 [0 0 1]
+[0 1 0] 		 [1 1 0]
+[0 1 1] 		 [1 1 1]
+[0 1 1] 		 [0 0 1]
+[1 0 0] 		 [1 0 1]
+[1 0 1] 		 [0 0 0]
+@ train 72.
+@ train fault phases.
+@ Best Training Accuracy: 100.00 % achieved at EP #389.
+@ Best Testing Accuracy: 100.00 % achieved at EP #75.
+@ Now Training Accuracy: 99.57 % achieved at EP #75.
+@ Last Training Accuracy: 99.91 % .
+@ Last Testing Accuracy: 100.00 % .
+train_accuracy 1.0
+valid_accuracy 1.0
+@ train 69.
+@ train fault phases.
+@ Best Training Accuracy: 100.00 % achieved at EP #372.
+@ Best Testing Accuracy: 100.00 % achieved at EP #268.
+@ Now Training Accuracy: 99.89 % achieved at EP #268.
+@ Last Training Accuracy: 99.99 % .
+@ Last Testing Accuracy: 99.96 % .
+train_accuracy 0.9996296296296296
+[ 1.  1.  1.] 		 [1 1 0]
+valid_accuracy 0.9988888888888889
+[0 1 1] 		 [0 0 1]
+@ train 66.
+@ train fault phases.
+@ Best Training Accuracy: 99.95 % achieved at EP #816.
+@ Best Testing Accuracy: 99.96 % achieved at EP #674.
+@ Now Training Accuracy: 99.84 % achieved at EP #674.
+@ Last Training Accuracy: 99.73 % .
+@ Last Testing Accuracy: 99.89 % .
+train_accuracy 0.9988888888888889
+[0 1 1] 		 [0 0 1]
+[0 1 0] 		 [1 1 0]
+[0 0 1] 		 [0 0 0]
+valid_accuracy 0.9966666666666667
+[0 0 1] 		 [0 0 0]
+[0 1 0] 		 [1 1 0]
+[0 1 0] 		 [1 1 0]
+@ train 81.
+@ train fault phases.
+@ Best Training Accuracy: 99.99 % achieved at EP #848.
+@ Best Testing Accuracy: 100.00 % achieved at EP #114.
+@ Now Training Accuracy: 99.59 % achieved at EP #114.
+@ Last Training Accuracy: 99.86 % .
+@ Last Testing Accuracy: 99.96 % .
+train_accuracy 1.0
+valid_accuracy 0.9988888888888889
+[1 0 1] 		 [1 0 0]
+@ train 319.
+@ train fault phases.
+@ Best Training Accuracy: 100.00 % achieved at EP #595.
+@ Best Testing Accuracy: 100.00 % achieved at EP #169.
+@ Now Training Accuracy: 99.80 % achieved at EP #169.
+@ Last Training Accuracy: 99.96 % .
+@ Last Testing Accuracy: 100.00 % .
+train_accuracy 1.0
+valid_accuracy 1.0
+
+@ train 66.
+@ train fault types.
+@ Best Training Accuracy: 50.81 % achieved at EP #1960.
+@ Best Testing Accuracy: 49.78 % achieved at EP #1882.
+@ Now Training Accuracy: 49.41 % achieved at EP #1882.
+@ Last Training Accuracy: 48.78 % .
+@ Last Testing Accuracy: 47.33 % .

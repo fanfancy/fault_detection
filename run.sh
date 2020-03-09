@@ -1,0 +1,2 @@
+python hht_coe_cnn_trainv0.8_2branch.py
+python hht_coe_cnn_trainv0.8_12type.py 

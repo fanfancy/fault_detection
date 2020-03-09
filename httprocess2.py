@@ -2,6 +2,7 @@ import numpy as np
 import utils
 import multiprocessing as mp
 from tqdm import tqdm
+import sys
 
 from scipy.signal import hilbert
 from utils import boundary_conditions
@@ -9,6 +10,7 @@ from utils import extr
 from scipy.signal import argrelmin, argrelmax
 from scipy.interpolate import splrep, splev
 from pyhht.emd import EMD
+from matplotlib import pyplot as plt 
 
 
 tol = 0.05
@@ -18,8 +20,14 @@ def HilTrans(imf, dt=1.0):
     anal = hilbert(imf)
     amp_env = np.abs(anal)
     anal_extend = np.append(0, anal)
-    iphase = np.unwrap(np.angle(anal_extend))
-    ifreq = np.diff(iphase) / dt
+    iphase = np.unwrap(np.angle(anal_extend)) 
+    ifreq = np.diff(iphase) / dt 
+    #ifreq[0:30] = 0
+    #ifreq[1570:1600]=0
+    #plt.figure()
+    #plt.plot(ifreq)
+    #plt.savefig("./figure_res/ifreq.png")
+    #sys.exit()
     return amp_env, ifreq
 
 
@@ -46,7 +54,7 @@ def sift(x, ts):
 
 def emd(x, ts, n_imfs):
     
-    x.dtype = 'float64' #?xif
+    x.dtype = 'float64' 
     imfs = np.zeros((n_imfs + 1, x.shape[0]))
     decomposer = EMD(x)
     allimfs = decomposer.decompose()
@@ -89,9 +97,9 @@ def hht(data, n_imfs):
     ts = np.array(range(seq_len))
 
     if n_imfs == 0:
-        imfs = np.reshape(data, [seq_len, 1, num_phases])
+        imfs = np.reshape(data, [seq_len, 1, num_phases]) 
     else:
-        imfs = np.zeros((seq_len, n_imfs, num_phases))
+        imfs = np.zeros((seq_len, n_imfs, num_phases)) # 1600,3,3
         for i in range(num_phases):
             #print (data[:, i]) #xif
             imfs[:, :, i] = np.transpose(emd(data[:, i], ts, n_imfs=n_imfs)[:n_imfs, :])
@@ -104,9 +112,9 @@ def hht(data, n_imfs):
     else:
         data_after_HHT = np.zeros((seq_len, n_imfs * 2, num_phases))
         for i in range(num_phases):
-            for j in range(n_imfs):
+            for j in range(n_imfs): # 0,1,2
                 data_after_HHT[:, 2 * j, i], data_after_HHT[:, 2 * j + 1, i] = HilTrans(imfs[:, j, i])
-    #print (data_after_HHT.shape)
+    # print (data_after_HHT.shape) # 1600,6,3
     return data_after_HHT
 
 def multicore(data, n_imfs, length):

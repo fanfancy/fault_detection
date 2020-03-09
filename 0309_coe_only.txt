@@ -1,0 +1,7 @@
+@ train 66.
+@ train fault types.
+@ Best Training Accuracy: 70.93 % achieved at EP #1986.
+@ Best Testing Accuracy: 45.56 % achieved at EP #1554.
+@ Now Training Accuracy: 68.00 % achieved at EP #1554.
+@ Last Training Accuracy: 70.56 % .
+@ Last Testing Accuracy: 43.44 % .
